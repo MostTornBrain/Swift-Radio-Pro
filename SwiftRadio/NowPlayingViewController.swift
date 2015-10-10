@@ -13,9 +13,6 @@
 import UIKit
 import MediaPlayer
 
-// There should be only one instance of the RadioKit object for the life of the app.
-let radioPlayer = RadioKit()
-
 //*****************************************************************
 // Protocol
 // Updates the StationsViewController when the track changes
@@ -48,6 +45,7 @@ class NowPlayingViewController: UIViewController {
     var justBecameActive = false
     var newStation = true
     var nowPlayingImageView: UIImageView!
+    let radioPlayer = Player.radio
     var track: Track!
     var mpVolumeSlider = UISlider()
     
