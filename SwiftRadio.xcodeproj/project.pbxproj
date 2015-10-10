@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C8D0EDA1BC9717100329BB1 /* libRadioKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8D0ED91BC9717100329BB1 /* libRadioKit.a */; settings = {ASSET_TAGS = (); }; };
+		5C8D0EE01BC9758900329BB1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8D0EDF1BC9758900329BB1 /* SystemConfiguration.framework */; settings = {ASSET_TAGS = (); }; };
 		9409E11C1ABF6FEA00312E2B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9409E11B1ABF6FEA00312E2B /* AppDelegate.swift */; };
 		9409E1241ABF6FEA00312E2B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9409E1221ABF6FEA00312E2B /* Main.storyboard */; };
 		9409E1261ABF6FEA00312E2B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9409E1251ABF6FEA00312E2B /* Images.xcassets */; };
@@ -59,6 +61,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C8D0ED81BC9715D00329BB1 /* RadioKitBridgeHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RadioKitBridgeHeader.h; sourceTree = "<group>"; };
+		5C8D0ED91BC9717100329BB1 /* libRadioKit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libRadioKit.a; sourceTree = "<group>"; };
+		5C8D0EDB1BC9718000329BB1 /* BufferView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BufferView.h; sourceTree = "<group>"; };
+		5C8D0EDC1BC9718000329BB1 /* RadioKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RadioKit.h; sourceTree = "<group>"; };
+		5C8D0EDF1BC9758900329BB1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		9409E1161ABF6FEA00312E2B /* SwiftRadio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftRadio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9409E11A1ABF6FEA00312E2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9409E11B1ABF6FEA00312E2B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -119,15 +126,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C8D0EE01BC9758900329BB1 /* SystemConfiguration.framework in Frameworks */,
+				5C8D0EDA1BC9717100329BB1 /* libRadioKit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C8D0EE11BC980C600329BB1 /* RadioKit */ = {
+			isa = PBXGroup;
+			children = (
+				5C8D0EDB1BC9718000329BB1 /* BufferView.h */,
+				5C8D0EDC1BC9718000329BB1 /* RadioKit.h */,
+				5C8D0ED91BC9717100329BB1 /* libRadioKit.a */,
+				5C8D0ED81BC9715D00329BB1 /* RadioKitBridgeHeader.h */,
+			);
+			name = RadioKit;
+			sourceTree = "<group>";
+		};
 		9409E10D1ABF6FE900312E2B = {
 			isa = PBXGroup;
 			children = (
+				5C8D0EDF1BC9758900329BB1 /* SystemConfiguration.framework */,
 				B90086461BBE40AF00E5372C /* MediaPlayer.framework */,
 				9409E1181ABF6FEA00312E2B /* SwiftRadio */,
 				949BBB411ACCA2B6005B7C26 /* Libraries */,
@@ -146,6 +167,7 @@
 		9409E1181ABF6FEA00312E2B /* SwiftRadio */ = {
 			isa = PBXGroup;
 			children = (
+				5C8D0EE11BC980C600329BB1 /* RadioKit */,
 				94D2608E1B45D0F800DE671C /* ViewControllers */,
 				94D2608F1B45D11800DE671C /* Cells */,
 				94823F861B5576F4004EC711 /* Data */,
@@ -508,10 +530,15 @@
 				INFOPLIST_FILE = SwiftRadio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwiftRadio",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.matthewfecher.SwiftRadio;
 				PRODUCT_NAME = SwiftRadio;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = SwiftRadio/RadioKitBridgeHeader.h;
 			};
 			name = Debug;
 		};
@@ -530,10 +557,15 @@
 				INFOPLIST_FILE = SwiftRadio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SwiftRadio",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.matthewfecher.SwiftRadio;
 				PRODUCT_NAME = SwiftRadio;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = SwiftRadio/RadioKitBridgeHeader.h;
 			};
 			name = Release;
 		};

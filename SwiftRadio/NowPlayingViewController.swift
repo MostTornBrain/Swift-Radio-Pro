@@ -41,7 +41,7 @@ class NowPlayingViewController: UIViewController {
     var justBecameActive = false
     var newStation = true
     var nowPlayingImageView: UIImageView!
-    let radioPlayer = Player.radio
+    let radioPlayer = RadioKit()
     var track: Track!
     var mpVolumeSlider = UISlider()
     
@@ -125,13 +125,8 @@ class NowPlayingViewController: UIViewController {
     //*****************************************************************
     
     func setupPlayer() {
-        radioPlayer.view.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
-        radioPlayer.view.sizeToFit()
-        radioPlayer.movieSourceType = MPMovieSourceType.Streaming
-        radioPlayer.fullscreen = false
-        radioPlayer.shouldAutoplay = true
-        radioPlayer.prepareToPlay()
-        radioPlayer.controlStyle = MPMovieControlStyle.None
+        radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
+        radioPlayer.delegate = self
     }
   
     func setupVolumeSlider() {
@@ -153,11 +148,10 @@ class NowPlayingViewController: UIViewController {
     }
     
     func stationDidChange() {
-        radioPlayer.stop()
+        radioPlayer.stopStream()
         
-        radioPlayer.contentURL = NSURL(string: currentStation.stationStreamURL)
-        radioPlayer.prepareToPlay()
-        radioPlayer.play()
+        radioPlayer.setStreamUrl(currentStation.stationStreamURL, isFile: false)
+        radioPlayer.startStream()
         
         updateLabels("Loading Station...")
         
@@ -178,7 +172,7 @@ class NowPlayingViewController: UIViewController {
     @IBAction func playPressed() {
         track.isPlaying = true
         playButtonEnable(false)
-        radioPlayer.play()
+        radioPlayer.startStream()
         updateLabels()
         
         // songLabel Animation
@@ -194,8 +188,7 @@ class NowPlayingViewController: UIViewController {
         
         playButtonEnable()
         
-        radioPlayer.pause()
-        updateLabels("Station Paused...")
+        radioPlayer.pauseStream()
         nowPlayingImageView.stopAnimating()
     }
     
@@ -460,18 +453,19 @@ class NowPlayingViewController: UIViewController {
         }
     }
     
+    // MARK Stormy RadioKit (SRK) protocol handlers
+    
     //*****************************************************************
     // MARK: - MetaData Updated Notification
     //*****************************************************************
     
-    func metadataUpdated(n: NSNotification)
+    func SRKMetaChanged()
     {
-        if(radioPlayer.timedMetadata != nil && radioPlayer.timedMetadata.count > 0)
+        if(radioPlayer.currTitle != nil)
         {
             startNowPlayingAnimation()
             
-            let firstMeta: MPTimedMetadata = radioPlayer.timedMetadata.first as! MPTimedMetadata
-            let metaData = firstMeta.value as! String
+            let metaData = radioPlayer.currTitle as String
             
             var stringParts = [String]()
             if metaData.rangeOfString(" - ") != nil {
@@ -524,4 +518,37 @@ class NowPlayingViewController: UIViewController {
             }
         }
     }
+    
+    func SRKConnecting()
+    {
+        updateLabels("Connecting to Station...")
+    }
+    
+    func SRKIsBuffering()
+    {
+        updateLabels("Buffering...")
+    }
+    
+    func SRKPlayStarted()
+    {
+        updateLabels()
+    }
+    
+    func SRKPlayStopped()
+    {
+        playButtonEnable()
+    }
+    
+    func SRKPlayPaused()
+    {
+        playButtonEnable()
+        updateLabels("Station Paused...")
+    }
+    
+    func SRKNoNetworkFound()
+    {
+        
+    }
+
+
 }
