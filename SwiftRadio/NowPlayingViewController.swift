@@ -13,6 +13,9 @@
 import UIKit
 import MediaPlayer
 
+// There should be only one instance of the RadioKit object for the life of the app.
+let radioPlayer = RadioKit()
+
 //*****************************************************************
 // Protocol
 // Updates the StationsViewController when the track changes
@@ -45,7 +48,6 @@ class NowPlayingViewController: UIViewController {
     var justBecameActive = false
     var newStation = true
     var nowPlayingImageView: UIImageView!
-    let radioPlayer = RadioKit()
     var track: Track!
     var mpVolumeSlider = UISlider()
     
@@ -67,13 +69,7 @@ class NowPlayingViewController: UIViewController {
         // Create Now Playing BarItem
         createNowPlayingAnimation()
         
-        // Setup MPMoviePlayerController
-        // If you're building an app for a client, you may want to
-        // replace the MediaPlayer player with a more robust 
-        // streaming library/SDK. Preferably one that supports interruptions,
-        // buffering, stream stitching, backup streams, etc.
-        // Most of the good streaming libaries are in Obj-C, however they
-        // will work nicely with this Swift code.
+        // Setup RadioKit library
         setupPlayer()
         
         // Notification for when app becomes active
@@ -130,7 +126,7 @@ class NowPlayingViewController: UIViewController {
     
     func setupPlayer() {
         
-        // Enter you RadioKit license key information here.
+        //TODO: Enter you RadioKit license key information here.
         radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
         radioPlayer.delegate = self
         if DEBUG_LOG {
@@ -545,19 +541,21 @@ class NowPlayingViewController: UIViewController {
     func SRKPlayStarted()
     {
         dispatch_async(dispatch_get_main_queue(), {
-            self.updateLabels()})
+            self.updateLabels()
+            self.playButtonEnable(false)
+        })
     }
     
     func SRKPlayStopped()
     {
         dispatch_async(dispatch_get_main_queue(), {
-            self.playButtonEnable()})
+            self.playButtonEnable(true)})
     }
     
     func SRKPlayPaused()
     {
         dispatch_async(dispatch_get_main_queue(), {
-            self.playButtonEnable()
+            self.playButtonEnable(true)
             self.updateLabels("Station Paused...")
         })
     }
