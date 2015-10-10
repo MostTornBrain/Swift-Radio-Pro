@@ -127,6 +127,9 @@ class NowPlayingViewController: UIViewController {
     func setupPlayer() {
         radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
         radioPlayer.delegate = self
+        if DEBUG_LOG {
+            print("RadioKit version: \(radioPlayer.version())")
+        }
     }
   
     func setupVolumeSlider() {
@@ -521,28 +524,36 @@ class NowPlayingViewController: UIViewController {
     
     func SRKConnecting()
     {
-        updateLabels("Connecting to Station...")
+        dispatch_async(dispatch_get_main_queue(), {
+            self.updateLabels("Connecting to Station...")
+        })
     }
     
     func SRKIsBuffering()
     {
-        updateLabels("Buffering...")
+        dispatch_async(dispatch_get_main_queue(), {
+            self.updateLabels("Buffering...")
+        })
     }
     
     func SRKPlayStarted()
     {
-        updateLabels()
+        dispatch_async(dispatch_get_main_queue(), {
+            self.updateLabels()})
     }
     
     func SRKPlayStopped()
     {
-        playButtonEnable()
+        dispatch_async(dispatch_get_main_queue(), {
+            self.playButtonEnable()})
     }
     
     func SRKPlayPaused()
     {
-        playButtonEnable()
-        updateLabels("Station Paused...")
+        dispatch_async(dispatch_get_main_queue(), {
+            self.playButtonEnable()
+            self.updateLabels("Station Paused...")
+        })
     }
     
     func SRKNoNetworkFound()
