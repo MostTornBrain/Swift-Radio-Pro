@@ -5,6 +5,10 @@
 //  Created by Matthew Fecher on 7/22/15.
 //  Copyright (c) 2015 MatthewFecher.com. All rights reserved.
 //
+//  Modified October 2015 to use StormyProductions RadioKit for improved stream handling
+//  NOTE: RadioKit is an streaming library that requires a license key if used
+//       in a product.  For more information, see: http://www.stormyprods.com/products/radiokit.php
+
 
 import UIKit
 import MediaPlayer
@@ -125,6 +129,8 @@ class NowPlayingViewController: UIViewController {
     //*****************************************************************
     
     func setupPlayer() {
+        
+        // Enter you RadioKit license key information here.
         radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
         radioPlayer.delegate = self
         if DEBUG_LOG {
