@@ -131,7 +131,7 @@ class NowPlayingViewController: UIViewController {
     //*****************************************************************
     
     func setupPlayer() {
-        // We only need to perform these setup operations once for the lifetime of the app
+        // We only need to perform some setup operations once for the lifetime of the app
         struct Onceler{
             static var doOnce = true
         }
@@ -141,11 +141,13 @@ class NowPlayingViewController: UIViewController {
 
             //TODO: Enter you RadioKit license key information here.
             radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
-            radioPlayer.delegate = self
             if DEBUG_LOG {
                 print("RadioKit version: \(radioPlayer.version())")
             }
         }
+        
+        // We need to set the delegate each time we load a new view controller as it could be a different controller each time.
+        radioPlayer.delegate = self
     }
   
     func setupVolumeSlider() {
