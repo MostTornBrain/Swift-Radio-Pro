@@ -34,6 +34,8 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var pauseButton: UIButton!
     @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var rewButton: UIButton!
+    @IBOutlet weak var ffButton: UIButton!
     @IBOutlet weak var songLabel: SpringLabel!
     @IBOutlet weak var stationDescLabel: UILabel!
     @IBOutlet weak var volumeParentView: UIView!
@@ -48,6 +50,8 @@ class NowPlayingViewController: UIViewController {
     let radioPlayer = Player.radio
     var track: Track!
     var mpVolumeSlider = UISlider()
+    
+    var rewOrFFTimer = NSTimer()
     
     weak var delegate: NowPlayingViewControllerDelegate?
     
@@ -123,12 +127,20 @@ class NowPlayingViewController: UIViewController {
     //*****************************************************************
     
     func setupPlayer() {
+        // We only need to perform these setup operations once for the lifetime of the app
+        struct Onceler{
+            static var doOnce = true
+        }
         
-        //TODO: Enter you RadioKit license key information here.
-        radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
-        radioPlayer.delegate = self
-        if DEBUG_LOG {
-            print("RadioKit version: \(radioPlayer.version())")
+        if (Onceler.doOnce){
+            Onceler.doOnce = false
+
+            //TODO: Enter you RadioKit license key information here.
+            radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
+            radioPlayer.delegate = self
+            if DEBUG_LOG {
+                print("RadioKit version: \(radioPlayer.version())")
+            }
         }
     }
   
@@ -199,6 +211,48 @@ class NowPlayingViewController: UIViewController {
         mpVolumeSlider.value = sender.value
     }
     
+    func rewind()
+    {
+        radioPlayer.rewind(10)		  // Rewind 10 seconds
+        dispatch_async(dispatch_get_main_queue(), {
+            self.updateAudioButtons()
+        })
+    }
+    
+    @IBAction func rewindDown()
+    {
+        rewind()
+        rewOrFFTimer = NSTimer.scheduledTimerWithTimeInterval(0.3, target:self, selector:"rewind", userInfo:nil, repeats:true)
+    }
+    
+    
+    @IBAction func rewindUp()
+    {
+        rewOrFFTimer.invalidate();
+    }
+    
+    func fastForward()
+    {
+        radioPlayer.fastForward(10)
+        dispatch_async(dispatch_get_main_queue(), {
+            self.updateAudioButtons()
+        })
+    }
+    
+    
+    @IBAction func fastForwardDown()
+    {
+        fastForward()
+        rewOrFFTimer = NSTimer.scheduledTimerWithTimeInterval(0.3, target:self, selector:"fastForward", userInfo:nil, repeats:true)
+    }
+    
+    
+    @IBAction func fastForwardUp()
+    {
+        rewOrFFTimer.invalidate()
+    }
+    
+
     //*****************************************************************
     // MARK: - UI Helper Methods
     //*****************************************************************
@@ -255,7 +309,25 @@ class NowPlayingViewController: UIViewController {
             pauseButton.enabled = true
             track.isPlaying = true
         }
+        updateAudioButtons()
     }
+
+    func updateAudioButtons() {
+            // Check if the stream is currently playing.  If so, adjust the play control buttons
+            if (track.isPlaying){
+                    rewButton.enabled = true
+                    
+                    if (radioPlayer.isFastForwardAllowed(10)){
+                        ffButton.enabled = true
+                    }else{
+                        ffButton.enabled = false
+                    }
+            }else{
+                rewButton.enabled = false
+                ffButton.enabled = false
+            }
+    }
+
     
     func createNowPlayingAnimation() {
         
