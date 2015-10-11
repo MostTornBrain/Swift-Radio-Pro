@@ -376,6 +376,11 @@
                                             <action selector="fastForwardUp" destination="vXZ-lx-hvc" eventType="touchUpOutside" id="rW7-FL-VFh"/>
                                         </connections>
                                     </button>
+                                    <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NgT-cX-XvR" customClass="BufferView">
+                                        <rect key="frame" x="0.0" y="0.0" width="280" height="12"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <animations/>
                                 <constraints>
@@ -387,6 +392,8 @@
                                     <constraint firstAttribute="width" constant="280" id="Iau-Ec-PKR"/>
                                     <constraint firstItem="k7t-tN-2wp" firstAttribute="leading" secondItem="JCK-L1-2Sc" secondAttribute="leading" constant="91" id="R9A-GB-GuH"/>
                                     <constraint firstAttribute="height" constant="70" id="ZpW-Ox-31t"/>
+                                    <constraint firstAttribute="bottom" secondItem="NgT-cX-XvR" secondAttribute="bottom" constant="58" id="asW-Ej-xwY"/>
+                                    <constraint firstItem="NgT-cX-XvR" firstAttribute="width" secondItem="JCK-L1-2Sc" secondAttribute="width" id="lmd-EC-mt6"/>
                                     <constraint firstAttribute="trailing" secondItem="D3H-co-r2v" secondAttribute="trailing" constant="91" id="nHo-zR-D9H"/>
                                     <constraint firstAttribute="trailing" secondItem="FRP-Z6-axQ" secondAttribute="trailing" constant="38" id="txB-Li-nnf"/>
                                 </constraints>
@@ -524,6 +531,7 @@
                         <outlet property="albumHeightConstraint" destination="hCD-tK-vVP" id="VlU-n5-VPe"/>
                         <outlet property="albumImageView" destination="obn-8m-awZ" id="13r-WO-VAs"/>
                         <outlet property="artistLabel" destination="v3l-q6-g0h" id="s0B-6Y-MWu"/>
+                        <outlet property="bufferView" destination="NgT-cX-XvR" id="zCW-cB-swR"/>
                         <outlet property="ffButton" destination="FRP-Z6-axQ" id="Sgn-dN-WLk"/>
                         <outlet property="pauseButton" destination="k7t-tN-2wp" id="hY6-Tz-wKV"/>
                         <outlet property="playButton" destination="D3H-co-r2v" id="7vv-MG-kTG"/>

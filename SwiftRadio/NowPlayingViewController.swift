@@ -40,6 +40,7 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var stationDescLabel: UILabel!
     @IBOutlet weak var volumeParentView: UIView!
     @IBOutlet weak var slider = UISlider()
+    @IBOutlet weak var bufferView: BufferView!
     
     var currentStation: RadioStation!
     var downloadTask: NSURLSessionDownloadTask?
@@ -52,6 +53,7 @@ class NowPlayingViewController: UIViewController {
     var mpVolumeSlider = UISlider()
     
     var rewOrFFTimer = NSTimer()
+    var bufferViewTimer = NSTimer()
     
     weak var delegate: NowPlayingViewControllerDelegate?
     
@@ -103,6 +105,8 @@ class NowPlayingViewController: UIViewController {
         
         // Setup slider
         setupVolumeSlider()
+        
+        startBufferViewThread()
     }
     
     func didBecomeActiveNotificationReceived() {
@@ -252,7 +256,29 @@ class NowPlayingViewController: UIViewController {
         rewOrFFTimer.invalidate()
     }
     
+    
+    func bufferVisualThread()
+    {
+        bufferView.bufferSizeSRK = radioPlayer.maxBufferSize()
+        bufferView.bufferCountSRK = radioPlayer.currBufferUsage()
+        bufferView.currBuffPtr = radioPlayer.currBufferPlaying()
+        bufferView.bufferByteOffset = radioPlayer.bufferByteOffset()
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.bufferView.setNeedsDisplay()})
+    }
 
+    func startBufferViewThread()
+    {
+        bufferViewTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target:self, selector:"bufferVisualThread", userInfo:nil, repeats:true)
+    }
+    
+    
+    func stopBufferViewThread()
+    {
+        bufferViewTimer.invalidate()
+    }
+    
     //*****************************************************************
     // MARK: - UI Helper Methods
     //*****************************************************************
