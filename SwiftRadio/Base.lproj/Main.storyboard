@@ -376,10 +376,10 @@
                                             <action selector="fastForwardUp" destination="vXZ-lx-hvc" eventType="touchUpOutside" id="rW7-FL-VFh"/>
                                         </connections>
                                     </button>
-                                    <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NgT-cX-XvR" customClass="BufferView">
+                                    <view alpha="0.25" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NgT-cX-XvR" customClass="BufferView">
                                         <rect key="frame" x="0.0" y="0.0" width="280" height="12"/>
                                         <animations/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                 </subviews>
                                 <animations/>
