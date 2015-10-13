@@ -28,6 +28,7 @@ Give it a quick watch.
 
 - Support for pause, rewind, and fast forward of a live stream
 - Adjustable audio buffer settings, for amount to buffer before start of playback as well as amount of audio saved for rewind
+- Supports a simple stero channel audio volume visualizer with animated bar graphs
 - Supports saving a live stream to a file (not implemented in the GUI yet)
 
 ##Important Notes
