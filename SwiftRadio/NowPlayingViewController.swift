@@ -41,19 +41,20 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var volumeParentView: UIView!
     @IBOutlet weak var slider = UISlider()
     @IBOutlet weak var bufferView: BufferView!
+    @IBOutlet weak var nowPlayingImageView: Visualizer!
     
     var currentStation: RadioStation!
     var downloadTask: NSURLSessionDownloadTask?
     var iPhone4 = false
     var justBecameActive = false
     var newStation = true
-    var nowPlayingImageView: UIImageView!
     let radioPlayer = Player.radio
     var track: Track!
     var mpVolumeSlider = UISlider()
     
     var rewOrFFTimer = NSTimer()
     var bufferViewTimer = NSTimer()
+    var audioVisualTimer = NSTimer()
     
     weak var delegate: NowPlayingViewControllerDelegate?
     
@@ -82,12 +83,6 @@ class NowPlayingViewController: UIViewController {
             name:"UIApplicationDidBecomeActiveNotification",
             object: nil)
         
-        // Notification for MediaPlayer metadata updated
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: Selector("metadataUpdated:"),
-            name:MPMoviePlayerTimedMetadataUpdatedNotification,
-            object: nil);
-        
         // Check for station change
         if newStation {
             track = Track()
@@ -98,8 +93,6 @@ class NowPlayingViewController: UIViewController {
             
             if !track.isPlaying {
                 pausePressed()
-            } else {
-                nowPlayingImageView.startAnimating()
             }
         }
         
@@ -121,9 +114,6 @@ class NowPlayingViewController: UIViewController {
         NSNotificationCenter.defaultCenter().removeObserver(self,
             name:"UIApplicationDidBecomeActiveNotification",
             object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self,
-            name: MPMoviePlayerTimedMetadataUpdatedNotification,
-            object: nil)
     }
     
     //*****************************************************************
@@ -141,6 +131,9 @@ class NowPlayingViewController: UIViewController {
 
             //TODO: Enter you RadioKit license key information here.
             radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
+            radioPlayer.setBufferWaitTime(15);
+            radioPlayer.setDataTimeout(10);
+            
             if DEBUG_LOG {
                 print("RadioKit version: \(radioPlayer.version())")
             }
@@ -148,6 +141,9 @@ class NowPlayingViewController: UIViewController {
         
         // We need to set the delegate each time we load a new view controller as it could be a different controller each time.
         radioPlayer.delegate = self
+        nowPlayingImageView.radioKit = radioPlayer
+        audioVisualTimer = NSTimer.scheduledTimerWithTimeInterval(1.0/15.0, target:self, selector:"audioVisualizationThread", userInfo:nil, repeats:true)
+
     }
   
     func setupVolumeSlider() {
@@ -200,8 +196,6 @@ class NowPlayingViewController: UIViewController {
         songLabel.animation = "flash"
         songLabel.animate()
         
-        // Start NowPlaying Animation
-        nowPlayingImageView.startAnimating()
     }
     
     @IBAction func pausePressed() {
@@ -210,7 +204,6 @@ class NowPlayingViewController: UIViewController {
         playButtonEnable()
         
         radioPlayer.pauseStream()
-        nowPlayingImageView.stopAnimating()
     }
     
     @IBAction func volumeChanged(sender:UISlider) {
@@ -279,6 +272,11 @@ class NowPlayingViewController: UIViewController {
     func stopBufferViewThread()
     {
         bufferViewTimer.invalidate()
+    }
+    
+    func audioVisualizationThread()
+    {
+        nowPlayingImageView.updateData()
     }
     
     //*****************************************************************
@@ -359,28 +357,9 @@ class NowPlayingViewController: UIViewController {
     
     func createNowPlayingAnimation() {
         
-        // Setup ImageView
-        nowPlayingImageView = UIImageView(image: UIImage(named: "NowPlayingBars-3"))
-        nowPlayingImageView.autoresizingMask = UIViewAutoresizing.None
-        nowPlayingImageView.contentMode = UIViewContentMode.Center
-        
-        // Create Animation
-        nowPlayingImageView.animationImages = AnimationFrames.createFrames()
-        nowPlayingImageView.animationDuration = 0.7
-        
-        // Create Top BarButton
-        let barButton = UIButton(type: UIButtonType.Custom)
-        barButton.frame = CGRectMake(0, 0, 40, 40);
-        barButton.addSubview(nowPlayingImageView)
-        nowPlayingImageView.center = barButton.center
-        
-        let barItem = UIBarButtonItem(customView: barButton)
+        let barItem = UIBarButtonItem(customView: nowPlayingImageView)
         self.navigationItem.rightBarButtonItem = barItem
         
-    }
-    
-    func startNowPlayingAnimation() {
-        nowPlayingImageView.startAnimating()
     }
     
     //*****************************************************************
@@ -566,8 +545,6 @@ class NowPlayingViewController: UIViewController {
     {
         if(radioPlayer.currTitle != nil)
         {
-            startNowPlayingAnimation()
-            
             let metaData = radioPlayer.currTitle as String
             
             var stringParts = [String]()
@@ -638,6 +615,8 @@ class NowPlayingViewController: UIViewController {
     
     func SRKPlayStarted()
     {
+        radioPlayer.enableLevelMetering() // Must make this call before using the audio gain visualizer
+
         dispatch_async(dispatch_get_main_queue(), {
             self.updateLabels()
             self.playButtonEnable(false)

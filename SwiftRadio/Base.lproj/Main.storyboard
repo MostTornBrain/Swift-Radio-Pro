@@ -494,6 +494,11 @@
                                     <constraint firstItem="Ygz-Co-31f" firstAttribute="top" secondItem="dtX-QN-LoN" secondAttribute="top" constant="22" id="tyF-Wg-6BH"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vud-5d-wmL" customClass="Visualizer" customModule="SwiftRadio" customModuleProvider="target">
+                                <rect key="frame" x="12" y="72" width="40" height="40"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -533,6 +538,7 @@
                         <outlet property="artistLabel" destination="v3l-q6-g0h" id="s0B-6Y-MWu"/>
                         <outlet property="bufferView" destination="NgT-cX-XvR" id="zCW-cB-swR"/>
                         <outlet property="ffButton" destination="FRP-Z6-axQ" id="Sgn-dN-WLk"/>
+                        <outlet property="nowPlayingImageView" destination="Vud-5d-wmL" id="H3u-ne-FCB"/>
                         <outlet property="pauseButton" destination="k7t-tN-2wp" id="hY6-Tz-wKV"/>
                         <outlet property="playButton" destination="D3H-co-r2v" id="7vv-MG-kTG"/>
                         <outlet property="rewButton" destination="9TL-iR-d6S" id="cR3-BO-IFN"/>

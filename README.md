@@ -1,6 +1,6 @@
 #Swift Radio
 
-Swift Radio is an open source radio station app with robust and professional features. This is a fully realized Radio App built entirely in Swift 2.
+Swift Radio is an open source radio station app with robust and professional features. This is a fully realized Radio App built entirely in Swift 2, modifed to demonstrate using the [RadioKit](http://www.stormyprods.com/products/radiokit.php) streaming library.
 
 ![alt text](http://matthewfecher.com/wp-content/uploads/2015/09/screen-1.jpg "Swift Radio")
 
@@ -24,6 +24,12 @@ Give it a quick watch.
 - Uses industry standard SwiftyJSON library for easy JSON manipulation
 - Pull to Refresh Stations
 
+## RadioKit Additional Features
+
+- Support for pause, rewind, and fast forward of a live stream
+- Adjustable audio buffer settings, for amount to buffer before start of playback as well as amount of audio saved for rewind
+- Supports saving a live stream to a file (not implemented in the GUI yet)
+
 ##Important Notes
 
 - LastFM is working on their API signups. So, you may have trouble signing up for a LastFM key today, hopefully they fix that soon. More info in FAQ below.  
@@ -34,7 +40,8 @@ Give it a quick watch.
 - SwiftyJSON & Spring are included in the repo to get you up & running quickly. It's on the roadmap to utilize CocoaPods in the future. 
 
 ##Credits
-*Created by [Matthew Fecher](http://matthewfecher.com), Twitter: [@goFecher](http://twitter.com/goFecher)*  
+*Created by [Matthew Fecher](http://matthewfecher.com), Twitter: [@goFecher](http://twitter.com/goFecher)*
+*Brian Stormont, creator of RadioKit, has created this branch with the professional [RadioKit](http://stormyprods.com/products/radiokit.php) SDK already integrated.* 
 *Thanks to Basel Farag, from [Denver Swift Heads](http://www.meetup.com/Denver-Swift-Heads/) for the code review.*  
 
 ##Requirements
@@ -92,7 +99,3 @@ A: Check with your stream provider to make sure they are sending Metadata proper
 Q: Sometimes the station desc does not disappear when the album art loads?  
 A: We are working on that, thank you for your patience.
 
-##RadioKit SDK Example 
-
-- You can use this Swift code as a front-end for a more robust streaming backend.
-- Brian Stormont, creator of RadioKit, has created a branch with the professional [RadioKit](http://stormyprods.com/products/radiokit.php) SDK already integrated. Plus, his branch adds rewind & fast forward stream playback. This is an excellent learning tool for those who are interested in seeing how a streaming library integrates with Swift Radio Pro. View the [branch here](https://github.com/MostTornBrain/Swift-Radio-Pro/tree/RadioKit).

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C7E683E1BCC9D2A00AE85B8 /* Visualizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C7E683D1BCC9D2A00AE85B8 /* Visualizer.swift */; settings = {ASSET_TAGS = (); }; };
 		5C8D0EE01BC9758900329BB1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8D0EDF1BC9758900329BB1 /* SystemConfiguration.framework */; settings = {ASSET_TAGS = (); }; };
 		5C8D0EE71BC9902900329BB1 /* libRadioKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C8D0EE41BC9902900329BB1 /* libRadioKit.a */; settings = {ASSET_TAGS = (); }; };
 		9409E11C1ABF6FEA00312E2B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9409E11B1ABF6FEA00312E2B /* AppDelegate.swift */; };
@@ -61,6 +62,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C7E683D1BCC9D2A00AE85B8 /* Visualizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visualizer.swift; sourceTree = "<group>"; };
 		5C8D0EDF1BC9758900329BB1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		5C8D0EE31BC9902900329BB1 /* BufferView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferView.h; sourceTree = "<group>"; };
 		5C8D0EE41BC9902900329BB1 /* libRadioKit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libRadioKit.a; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				5C8D0EE41BC9902900329BB1 /* libRadioKit.a */,
 				5C8D0EE51BC9902900329BB1 /* RadioKit.h */,
 				5C8D0EE61BC9902900329BB1 /* RadioKitBridgeHeader.h */,
+				5C7E683D1BCC9D2A00AE85B8 /* Visualizer.swift */,
 			);
 			name = RadioKit;
 			path = SwiftRadio/Libraries/RadioKit;
@@ -403,6 +406,7 @@
 				94D260981B45E8B800DE671C /* Track.swift in Sources */,
 				94DB0A951B98B762005ED993 /* DesignableImageView.swift in Sources */,
 				94DB0A921B98B762005ED993 /* AutoTextView.swift in Sources */,
+				5C7E683E1BCC9D2A00AE85B8 /* Visualizer.swift in Sources */,
 				94452E4F1AD6F24700BFE7A5 /* PopUpMenuViewController.swift in Sources */,
 				94DB0AA91B98B762005ED993 /* SpringView.swift in Sources */,
 				94DB0AAB1B98B762005ED993 /* TransitionZoom.swift in Sources */,
