@@ -21,6 +21,7 @@ import MediaPlayer
 protocol NowPlayingViewControllerDelegate: class {
     func songMetaDataDidUpdate(track: Track)
     func artworkDidUpdate(track: Track)
+    func trackPlayingToggled(track: Track)
 }
 
 //*****************************************************************
@@ -149,7 +150,6 @@ class NowPlayingViewController: UIViewController {
     func setupVolumeSlider() {
         // Note: This slider implementation uses a MPVolumeView
         // The volume slider only works in devices, not the simulator.
-  
         volumeParentView.backgroundColor = UIColor.clearColor()
         let volumeView = MPVolumeView(frame: volumeParentView.bounds)
         for view in volumeView.subviews {
@@ -174,7 +174,7 @@ class NowPlayingViewController: UIViewController {
         
         // songLabel animate
         songLabel.animation = "flash"
-        songLabel.repeatCount = 2
+        songLabel.repeatCount = 3
         songLabel.animate()
         
         resetAlbumArtwork()
@@ -196,6 +196,11 @@ class NowPlayingViewController: UIViewController {
         songLabel.animation = "flash"
         songLabel.animate()
         
+        // Start NowPlaying Animation
+        nowPlayingImageView.startAnimating()
+        
+        // Update StationsVC
+        self.delegate?.trackPlayingToggled(self.track)
     }
     
     @IBAction func pausePressed() {
@@ -204,6 +209,10 @@ class NowPlayingViewController: UIViewController {
         playButtonEnable()
         
         radioPlayer.pauseStream()
+        nowPlayingImageView.stopAnimating()
+        
+        // Update StationsVC
+        self.delegate?.trackPlayingToggled(self.track)
     }
     
     @IBAction func volumeChanged(sender:UISlider) {
@@ -285,7 +294,7 @@ class NowPlayingViewController: UIViewController {
     
     func optimizeForDeviceSize() {
         
-        // Adjust album size to fit iPhone 4s & iPhone 6 & 6+
+        // Adjust album size to fit iPhone 4s, 6s & 6s+
         let deviceHeight = self.view.bounds.height
         
         if deviceHeight == 480 {
@@ -374,19 +383,19 @@ class NowPlayingViewController: UIViewController {
     }
     
     func updateAlbumArtwork() {
-        
+        track.artworkLoaded = false
         if track.artworkURL.rangeOfString("http") != nil {
             
             // Hide station description
             dispatch_async(dispatch_get_main_queue()) {
-                self.stationDescLabel.hidden = true
+                //self.albumImageView.image = nil
+                self.stationDescLabel.hidden = false
             }
             
-            // Attempt to download album art from LastFM
+            // Attempt to download album art from an API
             if let url = NSURL(string: track.artworkURL) {
                 
-                self.downloadTask = self.albumImageView.loadImageWithURL(url) {
-                    (image) in
+                self.downloadTask = self.albumImageView.loadImageWithURL(url) { (image) in
                     
                     // Update track struct
                     self.track.artworkImage = image
@@ -399,7 +408,8 @@ class NowPlayingViewController: UIViewController {
                     self.albumImageView.animation = "wobble"
                     self.albumImageView.duration = 2
                     self.albumImageView.animate()
-                    
+                    self.stationDescLabel.hidden = true
+
                     // Update lockscreen
                     self.updateLockScreen()
                     
@@ -424,7 +434,7 @@ class NowPlayingViewController: UIViewController {
             self.delegate?.artworkDidUpdate(self.track)
             
         } else {
-            // No Station or LastFM art found, use default art
+            // No Station or API art found, use default art
             self.albumImageView.image = UIImage(named: "albumArt")
             track.artworkImage = albumImageView.image
         }
@@ -433,57 +443,73 @@ class NowPlayingViewController: UIViewController {
         self.view.setNeedsDisplay()
     }
 
-    // Call LastFM API to get album art url
+    // Call LastFM or iTunes API to get album art url
     
     func queryAlbumArt() {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        // Construct LastFM API Call URL
-        let queryURL = String(format: "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=%@&artist=%@&track=%@&format=json", apiKey, track.artist, track.title)
+        // Construct either LastFM or iTunes API call URL
+        let queryURL: String
+        if useLastFM {
+            queryURL = String(format: "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=%@&artist=%@&track=%@&format=json", apiKey, track.artist, track.title)
+        } else {
+            queryURL = String(format: "https://itunes.apple.com/search?term=%@+%@&entity=song", track.artist, track.title)
+        }
         
         let escapedURL = queryURL.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())
         
         // Query API
         DataManager.getTrackDataWithSuccess(escapedURL!) { (data) in
             
-            // Turn on network indicator in status bar
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            
             if DEBUG_LOG {
-                print("LAST FM API SUCCESSFUL RETURN")
+                print("API SUCCESSFUL RETURN")
                 print("url: \(escapedURL!)")
             }
             
             let json = JSON(data: data)
             
-            // Get Largest Sized Image
-            if let imageArray = json["track"]["album"]["image"].array {
-                
-                let arrayCount = imageArray.count
-                let lastImage = imageArray[arrayCount - 1]
-                
-                if let artURL = lastImage["#text"].string {
+            if useLastFM {
+                // Get Largest Sized LastFM Image
+                if let imageArray = json["track"]["album"]["image"].array {
                     
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    let arrayCount = imageArray.count
+                    let lastImage = imageArray[arrayCount - 1]
                     
-                    // Check for Default Last FM Image
-                    if artURL.rangeOfString("/noimage/") != nil {
-                        self.resetAlbumArtwork()
+                    if let artURL = lastImage["#text"].string {
+                        
+                        // Check for Default Last FM Image
+                        if artURL.rangeOfString("/noimage/") != nil {
+                            self.resetAlbumArtwork()
+                            
+                        } else {
+                            // LastFM image found!
+                            self.track.artworkURL = artURL
+                            self.track.artworkLoaded = true
+                            self.updateAlbumArtwork()
+                        }
                         
                     } else {
-                        // LastFM image found!
-                        self.track.artworkURL = artURL
-                        self.track.artworkLoaded = true
-                        self.updateAlbumArtwork()
+                        self.resetAlbumArtwork()
                     }
-                    
                 } else {
                     self.resetAlbumArtwork()
                 }
+            
             } else {
-                self.resetAlbumArtwork()
+                // Use iTunes API. Images are 100px by 100px
+                if let artURL = json["results"][0]["artworkUrl100"].string {
+                    
+                    if DEBUG_LOG { print("iTunes artURL: \(artURL)") }
+                    
+                    self.track.artworkURL = artURL
+                    self.track.artworkLoaded = true
+                    self.updateAlbumArtwork()
+                } else {
+                    self.resetAlbumArtwork()
+                }
             }
+            
         }
     }
     
@@ -589,7 +615,7 @@ class NowPlayingViewController: UIViewController {
                     // Update Stations Screen
                     self.delegate?.songMetaDataDidUpdate(self.track)
                     
-                    // Query LastFM API for album art
+                    // Query API for album art
                     self.resetAlbumArtwork()
                     self.queryAlbumArt()
                     self.updateLockScreen()
