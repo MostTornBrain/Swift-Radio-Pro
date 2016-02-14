@@ -72,9 +72,6 @@ class NowPlayingViewController: UIViewController {
         // Set View Title
         self.title = currentStation.stationName
         
-        // Create Now Playing BarItem
-        createNowPlayingAnimation()
-        
         // Setup RadioKit library
         setupPlayer()
         
@@ -145,6 +142,7 @@ class NowPlayingViewController: UIViewController {
         nowPlayingImageView.radioKit = radioPlayer
         audioVisualTimer = NSTimer.scheduledTimerWithTimeInterval(1.0/15.0, target:self, selector:"audioVisualizationThread", userInfo:nil, repeats:true)
 
+
     }
   
     func setupVolumeSlider() {
@@ -196,9 +194,6 @@ class NowPlayingViewController: UIViewController {
         songLabel.animation = "flash"
         songLabel.animate()
         
-        // Start NowPlaying Animation
-        nowPlayingImageView.startAnimating()
-        
         // Update StationsVC
         self.delegate?.trackPlayingToggled(self.track)
     }
@@ -209,7 +204,6 @@ class NowPlayingViewController: UIViewController {
         playButtonEnable()
         
         radioPlayer.pauseStream()
-        nowPlayingImageView.stopAnimating()
         
         // Update StationsVC
         self.delegate?.trackPlayingToggled(self.track)
@@ -363,13 +357,6 @@ class NowPlayingViewController: UIViewController {
             }
     }
 
-    
-    func createNowPlayingAnimation() {
-        
-        let barItem = UIBarButtonItem(customView: nowPlayingImageView)
-        self.navigationItem.rightBarButtonItem = barItem
-        
-    }
     
     //*****************************************************************
     // MARK: - Album Art

@@ -26,6 +26,13 @@ let useLocalStations = true
 let stationDataURL   = "http://yoururl.com/json/stations.json"
 
 //**************************************
+// SEARCH BAR
+//**************************************
+
+// Set this to "true" to enable the search bar
+let searchable = false
+
+//**************************************
 // LASTFM API
 //**************************************
 

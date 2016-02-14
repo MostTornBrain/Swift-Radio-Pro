@@ -18,6 +18,7 @@ Give it a quick watch.
 - Custom views optimized for iPhone 4s, 5, 6 and 6+ for backwards compatibility
 - Compiles with Xcode 7 & Swift 2.0
 - Background audio performance
+- Search Bar that can be turned on or off to search stations
 - Supports local or hosted station images
 - "About" screen with ability to send email & visit website
 - Uses industry standard SwiftyJSON library for easy JSON manipulation
@@ -31,8 +32,10 @@ Give it a quick watch.
 - Supports saving a live stream to a file (not implemented in the GUI yet)
 
 ##Important Notes
+- 12.30.15 Update: UISearchBar added, thanks [@fethica](https://github.com/fethica). Turn it on/off in the "SwiftRadio-Settings" file.  
+- 12.16.15 Update: New branch added using a single radio station.
+- 12.14.15 Update: LastFM has reopened their API signups. Get one at [last.fm/api](http://www.last.fm/api).
 - 10.21.15 Update: Added option to use iTunes API to download album art. (See FAQ below). iTunes art is 100px x 100px. i.e. It is smaller than LastFM artwork. So, if you use this API instead, you will want to adjust the UI of your app.
-- LastFM is working on their API signups. So, you may have trouble signing up for a LastFM key, hopefully they fix that soon. More info in FAQ below.  
 - Volume slider works great in devices, not simulator. This is an Xcode simulator issue.  
 - Radio stations in demo are for demonstration purposes only. 
 - For a production product, you may want to swap out the MPMoviePlayerController for a more robust streaming library/SDK (with stream stitching, interruption handling, etc).
@@ -78,14 +81,11 @@ Contributions are very welcome. Please create a separate branch (e.g. features/3
 
 ##FAQ
 
-Q: Do I have to pay you anything if I make an app with this code?  
-A: Nope. This is completely open source, you can do whatever you want with it. It's usually cool to thank the project if you use the code. Go build stuff. Enjoy.
-
 Q: How do I use the iTunes API instead of LastFM?  
 A: In the SwiftRadio-Settings.swift file, set the "useLastFM" key to "false". You do not need an API key to use the iTunes API. It is free.
 
 Q: The LastFM site isn't working properly? I can't create an API key.  
-A: Official word from LastFM "the team are working to add support as soon as possible". You do not need a LastFM key if you use the iTunes (or other) API.
+A: LastFM will sometimes put API signups on hold. You can check back later or try a different API.
 
 Q: It looks like your LastFM api key and secret might have been left in the code?  
 A: Yes, people may use it for small amounts of testing. However, I ask that you change it before submitting to the app store. (Plus, it would be self-defeating for someone to submit it to the app store with the testing keys, as it would quickly throttle out and their album art downloads would stop working!)
@@ -102,5 +102,5 @@ A: Paste your stream URL into a browser to see if it will play there. The stream
 Q: The song names aren't appearing for my station?  
 A: Check with your stream provider to make sure they are sending Metadata properly. If a station sends data in a unique way, you can modify the way the app parses the metadata in the "metadataUpdated" method in the NowPlayingViewController.
 
-Q: Sometimes the station desc does not disappear when the album art loads?  
-A: We are working on that, thank you for your patience.
+
+
