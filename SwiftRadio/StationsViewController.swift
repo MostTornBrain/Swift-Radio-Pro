@@ -320,14 +320,14 @@ extension StationsViewController: UITableViewDataSource {
             }
             
             // The UISeachController is active
-            if searchController.active {
+            if searchController.isActive {
                 let station = searchedStations[indexPath.row]
-                cell.configureStationCell(station)
+                cell.configureStationCell(station: station)
                 
             // The UISeachController is not active
             } else {
                 let station = stations[indexPath.row]
-                cell.configureStationCell(station)
+                cell.configureStationCell(station: station)
             }
             
             return cell

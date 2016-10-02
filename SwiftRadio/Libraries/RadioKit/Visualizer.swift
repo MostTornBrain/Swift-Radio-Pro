@@ -20,18 +20,18 @@ class Visualizer: UIView {
         radioKit = nil;
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let size: CGSize = bounds.size
-        let context: CGContextRef = UIGraphicsGetCurrentContext()!
-        CGContextSetAllowsAntialiasing(context, false)
+        let context: CGContext = UIGraphicsGetCurrentContext()!
+        context.setAllowsAntialiasing(false)
         
-        CGContextSetGrayFillColor(context, 1.0, 1.0)
-        CGContextFillRect(context, CGRectMake(0, size.height, 5, -(size.height * plot[0])));
-        CGContextFillRect(context, CGRectMake(6, size.height, 5, -(size.height * plot[1])));
-        CGContextFillRect(context, CGRectMake(15, size.height, 5, -(size.height * plot[2])));
-        CGContextFillRect(context, CGRectMake(21, size.height, 5, -(size.height * plot[3])));
+        context.setFillColor(gray: 1.0, alpha: 1.0)
+        context.fill(CGRect(x:0, y:size.height, width:5, height:-(size.height * plot[0])));
+        context.fill(CGRect(x:6, y:size.height, width:5, height:-(size.height * plot[1])));
+        context.fill(CGRect(x:15, y:size.height, width:5, height:-(size.height * plot[2])));
+        context.fill(CGRect(x:21, y:size.height, width:5, height:-(size.height * plot[3])));
         
-        CGContextSetAllowsAntialiasing(context, true);
+        context.setAllowsAntialiasing(true);
     }
     
     required init?(coder aDecoder: NSCoder) {

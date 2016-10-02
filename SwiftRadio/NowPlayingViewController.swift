@@ -13,6 +13,8 @@
 import UIKit
 import MediaPlayer
 
+let DEBUG_LOG = true
+
 //*****************************************************************
 // Protocol
 // Updates the StationsViewController when the track changes
@@ -53,9 +55,9 @@ class NowPlayingViewController: UIViewController {
     var track: Track!
     var mpVolumeSlider = UISlider()
     
-    var rewOrFFTimer = NSTimer()
-    var bufferViewTimer = NSTimer()
-    var audioVisualTimer = NSTimer()
+    var rewOrFFTimer = Timer()
+    var bufferViewTimer = Timer()
+    var audioVisualTimer = Timer()
     
     weak var delegate: NowPlayingViewControllerDelegate?
     
@@ -86,18 +88,6 @@ class NowPlayingViewController: UIViewController {
             selector: #selector(NowPlayingViewController.didBecomeActiveNotificationReceived),
             name: Notification.Name("UIApplicationDidBecomeActiveNotification"),
             object: nil)
-        
-        // Notification for MediaPlayer metadata updated
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(NowPlayingViewController.metadataUpdated),
-            name: Notification.Name.MPMoviePlayerTimedMetadataUpdated,
-            object: nil)
-        
-        // Notification for AVAudioSession Interruption (e.g. Phone call)
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(NowPlayingViewController.sessionInterrupted),
-            name: Notification.Name.AVAudioSessionInterruption,
-            object: AVAudioSession.sharedInstance())
         
         // Check for station change
         if newStation {
@@ -152,7 +142,7 @@ class NowPlayingViewController: UIViewController {
             Onceler.doOnce = false
 
             //TODO: Enter you RadioKit license key information here.
-            radioPlayer.authenticateLibraryWithKey1(0x1, andKey2: 0x02)
+            radioPlayer.authenticateLibrary(withKey1: 0x1, andKey2: 0x02)
             radioPlayer.setBufferWaitTime(15);
             radioPlayer.setDataTimeout(10);
             
@@ -164,16 +154,7 @@ class NowPlayingViewController: UIViewController {
         // We need to set the delegate each time we load a new view controller as it could be a different controller each time.
         radioPlayer.delegate = self
         nowPlayingImageView.radioKit = radioPlayer
-        audioVisualTimer = NSTimer.scheduledTimerWithTimeInterval(1.0/15.0, target:self, selector:"audioVisualizationThread", userInfo:nil, repeats:true)
-
-
-        radioPlayer.view.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
-        radioPlayer.view.sizeToFit()
-        radioPlayer.movieSourceType = MPMovieSourceType.streaming
-        radioPlayer.isFullscreen = false
-        radioPlayer.shouldAutoplay = true
-        radioPlayer.prepareToPlay()
-        radioPlayer.controlStyle = MPMovieControlStyle.none
+        audioVisualTimer = Timer.scheduledTimer(timeInterval: 1.0/15.0, target:self, selector:#selector(NowPlayingViewController.audioVisualizationThread), userInfo:nil, repeats:true)
     }
   
     func setupVolumeSlider() {
@@ -217,7 +198,7 @@ class NowPlayingViewController: UIViewController {
     
     @IBAction func playPressed() {
         track.isPlaying = true
-        playButtonEnable(false)
+        playButtonEnable(enabled: false)
         radioPlayer.startStream()
         updateLabels()
         
@@ -236,7 +217,7 @@ class NowPlayingViewController: UIViewController {
         
         radioPlayer.pauseStream()
         updateLabels(statusMessage: "Station Paused...")
-        nowPlayingImageView.stopAnimating()
+        // nowPlayingImageView.stopAnimating()
         
         // Update StationsVC
         self.delegate?.trackPlayingToggled(track: self.track)
@@ -249,7 +230,7 @@ class NowPlayingViewController: UIViewController {
     func rewind()
     {
         radioPlayer.rewind(10)		  // Rewind 10 seconds
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.updateAudioButtons()
         })
     }
@@ -257,7 +238,7 @@ class NowPlayingViewController: UIViewController {
     @IBAction func rewindDown()
     {
         rewind()
-        rewOrFFTimer = NSTimer.scheduledTimerWithTimeInterval(0.3, target:self, selector:"rewind", userInfo:nil, repeats:true)
+        rewOrFFTimer = Timer.scheduledTimer(timeInterval: 0.3, target:self, selector:#selector(NowPlayingViewController.rewind), userInfo:nil, repeats:true)
     }
     
     
@@ -269,7 +250,7 @@ class NowPlayingViewController: UIViewController {
     func fastForward()
     {
         radioPlayer.fastForward(10)
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.updateAudioButtons()
         })
     }
@@ -278,7 +259,7 @@ class NowPlayingViewController: UIViewController {
     @IBAction func fastForwardDown()
     {
         fastForward()
-        rewOrFFTimer = NSTimer.scheduledTimerWithTimeInterval(0.3, target:self, selector:"fastForward", userInfo:nil, repeats:true)
+        rewOrFFTimer = Timer.scheduledTimer(timeInterval: 0.3, target:self, selector:#selector(NowPlayingViewController.fastForward), userInfo:nil, repeats:true)
     }
     
     
@@ -295,13 +276,13 @@ class NowPlayingViewController: UIViewController {
         bufferView.currBuffPtr = radioPlayer.currBufferPlaying()
         bufferView.bufferByteOffset = radioPlayer.bufferByteOffset()
         
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.bufferView.setNeedsDisplay()})
     }
 
     func startBufferViewThread()
     {
-        bufferViewTimer = NSTimer.scheduledTimerWithTimeInterval(0.2, target:self, selector:"bufferVisualThread", userInfo:nil, repeats:true)
+        bufferViewTimer = Timer.scheduledTimer(timeInterval: 0.2, target:self, selector:#selector(NowPlayingViewController.bufferVisualThread), userInfo:nil, repeats:true)
     }
     
     
@@ -377,28 +358,29 @@ class NowPlayingViewController: UIViewController {
     func updateAudioButtons() {
             // Check if the stream is currently playing.  If so, adjust the play control buttons
             if (track.isPlaying){
-                    rewButton.enabled = true
+                    rewButton.isEnabled = true
                     
                     if (radioPlayer.isFastForwardAllowed(10)){
-                        ffButton.enabled = true
+                        ffButton.isEnabled = true
                     }else{
-                        ffButton.enabled = false
+                        ffButton.isEnabled = false
                     }
             }else{
-                rewButton.enabled = false
-                ffButton.enabled = false
+                rewButton.isEnabled = false
+                ffButton.isEnabled = false
             }
+    }
     
     func createNowPlayingAnimation() {
         
         // Setup ImageView
-        nowPlayingImageView = UIImageView(image: UIImage(named: "NowPlayingBars-3"))
+        //nowPlayingImageView = UIImageView(image: UIImage(named: "NowPlayingBars-3"))
         nowPlayingImageView.autoresizingMask = []
         nowPlayingImageView.contentMode = UIViewContentMode.center
         
         // Create Animation
-        nowPlayingImageView.animationImages = AnimationFrames.createFrames()
-        nowPlayingImageView.animationDuration = 0.7
+        //nowPlayingImageView.animationImages = AnimationFrames.createFrames()
+        //nowPlayingImageView.animationDuration = 0.7
         
         // Create Top BarButton
         let barButton = UIButton(type: UIButtonType.custom)
@@ -412,7 +394,7 @@ class NowPlayingViewController: UIViewController {
     }
     
     func startNowPlayingAnimation() {
-        nowPlayingImageView.startAnimating()
+        //nowPlayingImageView.startAnimating()
     }
 
     
@@ -698,15 +680,15 @@ class NowPlayingViewController: UIViewController {
     
     func SRKConnecting()
     {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.updateLabels("Connecting to Station...")
+        DispatchQueue.main.async(execute: {
+            self.updateLabels(statusMessage: "Connecting to Station...")
         })
     }
     
     func SRKIsBuffering()
     {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.updateLabels("Buffering...")
+        DispatchQueue.main.async(execute: {
+            self.updateLabels(statusMessage: "Buffering...")
         })
     }
     
@@ -714,23 +696,23 @@ class NowPlayingViewController: UIViewController {
     {
         radioPlayer.enableLevelMetering() // Must make this call before using the audio gain visualizer
 
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             self.updateLabels()
-            self.playButtonEnable(false)
+            self.playButtonEnable(enabled: false)
         })
     }
     
     func SRKPlayStopped()
     {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.playButtonEnable(true)})
+        DispatchQueue.main.async(execute: {
+            self.playButtonEnable(enabled: true)})
     }
     
     func SRKPlayPaused()
     {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.playButtonEnable(true)
-            self.updateLabels("Station Paused...")
+        DispatchQueue.main.async(execute: {
+            self.playButtonEnable(enabled: true)
+            self.updateLabels(statusMessage: "Station Paused...")
         })
     }
     
