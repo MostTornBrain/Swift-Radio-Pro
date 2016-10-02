@@ -5,7 +5,5 @@ SwiftRadio.xcodeproj/xcuserdata/brianstormont.xcuserdatad/xcschemes/xcschememana
 *.xcuserstate
 
 *.xcbkptlist
-.DS_Store
-*.xccheckout
-*.xcscmblueprint
 xcuserdata
+.DS_Store

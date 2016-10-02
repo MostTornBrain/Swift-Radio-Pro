@@ -13,7 +13,7 @@ import Foundation
 //**************************************
 
 // Display Comments
-let DEBUG_LOG = true
+let kDebugLog = true
 
 //**************************************
 // STATION JSON
@@ -30,7 +30,7 @@ let stationDataURL   = "http://yoururl.com/json/stations.json"
 //**************************************
 
 // Set this to "true" to enable the search bar
-let searchable = false
+let searchable = true
 
 //**************************************
 // LASTFM API

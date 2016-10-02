@@ -1,6 +1,6 @@
 #Swift Radio
 
-Swift Radio is an open source radio station app with robust and professional features. This is a fully realized Radio App built entirely in Swift 2, modifed to demonstrate using the [RadioKit](http://www.stormyprods.com/products/radiokit.php) streaming library.
+Swift Radio is an open source radio station app with robust and professional features. This is a fully realized Radio App built entirely in Swift 3, modifed to demonstrate using the [RadioKit](http://www.stormyprods.com/products/radiokit.php) streaming library.
 
 ![alt text](http://matthewfecher.com/wp-content/uploads/2015/11/radiokit.jpg "RadioKit Example")
 
@@ -32,6 +32,12 @@ Give it a quick watch.
 - Supports saving a live stream to a file (not implemented in the GUI yet)
 
 ##Important Notes
+- 9.20.16 Update: Master branch migrated to Xcode 8/Swift 3 by [@fethica](https://github.com/fethica). Big thanks to him!
+- 9.08.16 Update: An Xcode 8 / Swift 2.3 branch as been added. It needs some fine-tuning. Feel free to dive in with PRs. It might be a few weeks until I have time to smooth it out: [https://github.com/swiftcodex/Swift-Radio-Pro/tree/xcode8](https://github.com/swiftcodex/Swift-Radio-Pro/tree/xcode8)
+- 7.26.16 Update: AVPlayer development branch added, thanks [@kusikusa](https://github.com/kusikusa). Plus, this branch includes the Spotify API for downloading artwork: [AVPlayer/Spotify Branch](https://github.com/swiftcodex/Swift-Radio-Pro/tree/avplayer)
+- 6.5.16 Update: Bluetooth streaming added, thanks [@fethica](https://github.com/fethica)
+- 3.27.16 Update: Google handoff added, thanks [@GraemeHarrison](https://github.com/GraemeHarrison)
+- 2.24.16 Update: Share icon added, thanks [@SuperChloe](https://github.com/SuperChloe).  
 - 12.30.15 Update: UISearchBar added, thanks [@fethica](https://github.com/fethica). Turn it on/off in the "SwiftRadio-Settings" file.  
 - 12.16.15 Update: New branch added using a single radio station.
 - 12.14.15 Update: LastFM has reopened their API signups. Get one at [last.fm/api](http://www.last.fm/api).
@@ -79,7 +85,20 @@ Includes an example "stations.json" file. You may upload the JSON file to a serv
 
 Contributions are very welcome. Please create a separate branch (e.g. features/3dtouch). Please do not commit on master.
 
+## Custom Work & Consulting
+
+We have recent experience building iOS apps for both independent and high-profile clients (brand names and apps we can't discuss here, but, you would instantly recognize!) Additionally, we've built advanced versions of this open-source radio player for amazing independent clients (such as this one):
+
+![RadioInformer](http://matthewfecher.com/wp-content/uploads/2016/08/SideBySide.jpg)
+
+[Get in Touch](http://matthewfecher.com/contact/) to see what we can do for you!
+
 ##FAQ
+
+Q: Do I have to pay you anything if I make an app with this code?  
+A: Nope. This is completely open source, you can do whatever you want with it. It's usually cool to thank the project if you use the code. Go build stuff. Enjoy.
+
+Summer 2016 Update: There's now dozens of apps in the app store successfully using this code! That's awesome. If you do use the code, you may want to change the graphics (reskin it) and make it your own. There's no fun in just resubmitting someone else's app to the app store "as is", add something to it! :)
 
 Q: How do I use the iTunes API instead of LastFM?  
 A: In the SwiftRadio-Settings.swift file, set the "useLastFM" key to "false". You do not need an API key to use the iTunes API. It is free.
@@ -99,8 +118,21 @@ A: There is an albumArt constraint modified in the code. See the "optimizeForDev
 Q: My radio station isn't playing?  
 A: Paste your stream URL into a browser to see if it will play there. The stream may be offline or have a weak connection.
 
+Q: Can you help me add a feature? Can you help me understand the code? Can you help with a problem I'm having?  
+A: While I have a full-time job and other project obligations, I'd highly recommend you find a developer or mentor in your area to help. The code is well-documented and most developers should be able to help you rather quickly. While I am sometimes available for paid freelance work, **I am not able to provide any free support or modifications.** Thank you for understanding!
+
 Q: The song names aren't appearing for my station?  
 A: Check with your stream provider to make sure they are sending Metadata properly. If a station sends data in a unique way, you can modify the way the app parses the metadata in the "metadataUpdated" method in the NowPlayingViewController.
 
+##Single Station Branch
+There's now a branch without the StationsViewController. This is so you can use this code as a starting place for an app for just one radio station. View that [Branch Here](https://github.com/swiftcodex/Swift-Radio-Pro/tree/single-station).
 
+##RadioKit SDK Example 
 
+![alt text](http://matthewfecher.com/wp-content/uploads/2015/11/radiokit.jpg "RadioKit Example")
+
+- You can use this Swift code as a front-end for a more robust streaming backend.
+- Brian Stormont, creator of RadioKit, has created a branch with the professional [RadioKit](http://stormyprods.com/products/radiokit.php) SDK already integrated. **Plus, his branch adds rewind & fast forward stream playback.** This is an excellent learning tool for those who are interested in seeing how a streaming library integrates with Swift Radio Pro. View the [branch here](https://github.com/MostTornBrain/Swift-Radio-Pro/tree/RadioKit).
+
+##Get Creative
+Here's a branch of the code that plays streaming TV Stations instead of radio stations. https://github.com/msahins/myTV
