@@ -23,6 +23,7 @@ class AboutViewController: UIViewController {
     // MARK: - IBActions
     //*****************************************************************
     
+    @IBAction func emailButtonDidTouch(_ sender: UIButton) {
         
         // Use your own email address & subject
         let receipients = ["matthew.fecher@gmail.com"]
