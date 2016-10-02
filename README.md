@@ -16,7 +16,7 @@ Give it a quick watch.
 - Ability to update Stations from server or locally. (Update stations anytime without resubmitting to app store!)
 - Displays Artist, Track & Album Art on Lock Screen
 - Custom views optimized for iPhone 4s, 5, 6 and 6+ for backwards compatibility
-- Compiles with Xcode 7 & Swift 2.0
+- Compiles with Xcode 8 & Swift 3.0
 - Background audio performance
 - Search Bar that can be turned on or off to search stations
 - Supports local or hosted station images
@@ -56,7 +56,7 @@ Give it a quick watch.
 ##Requirements
 
 - iOS 8.0+ / Mac OS X 10.9+
-- Xcode 7
+- Xcode 8
 
 ##Setup
 
